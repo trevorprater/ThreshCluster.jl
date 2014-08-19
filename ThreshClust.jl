@@ -1,4 +1,5 @@
 module ThreshClust
+using Codecs
 using Debug
 #This is an API for doing simple clustering with an array of data points and a metric that can be applied to any member of those data points. Ideally, the API for this clustering
 #mechanism should need nothing more than to be passed an array and a distance function and do all the work on its own. We'll see how well that goal works out."""
@@ -20,9 +21,8 @@ export Simple_Threshold_Criteria
 function make_simple_threshold_clusters(array,threshcrit::Threshold_Criteria)
 	capsulearray = initialize_cluster_containers(array,threshcrit.compared_quantity)
 	clusters = develop_clusters(capsulearray,threshcrit)
-	return clusters
-	#=cluster_dict = make_cluster_dict(clusters)=#
-	#=return (clusters,cluster_dict)=#
+	(cluster_lookup,cleaned_clusters) = clean_clusters(clusters)
+	return  (cluster_lookup,cleaned_clusters)
 end
 export make_simple_threshold_clusters
 
@@ -49,8 +49,14 @@ function assign_relative_clusters(culled_set,threshcrit)
 	"""Compares each element in the set with each other element in the set. Then, when we have
 	two elements that are the same, we add that to the comparing element's dictionary."""
 	memberships = Dict()
+	"""The process for this is as follows:
+		1. We check to see who is in the cluster that is represented by a given element
+		2. We then put that cluster in the cluster lookup, and index it in.
+		3. The cluster is indexed by this cluster lookup
+	This function can return the cluster index as well, but why?"""
 	for compquantset in culled_set
 		compquant = collect(compquantset)[1]
+		#^ Needed because each element is a set: we need to get each element out of the set
 		compsym = symbol(string(compquant))
 		memberships = merge(memberships,{compsym => Set()})
 		#=@bp=#
@@ -61,6 +67,7 @@ function assign_relative_clusters(culled_set,threshcrit)
 			end
 		end
 	end
+
 	return memberships
 end
 function to_set(array)
@@ -84,7 +91,26 @@ function bake_clusters(memberships,caparray,threshcrit)
 	return caparray
 end
 
-
-	
-
+@debug function clean_clusters(oldcaparray)
+	#Indexes the clusters by cluster number, rather than the members of the cluster
+	caparray = oldcaparray
+	cluster_lookup = Dict()
+	cluster_num = 1
+	for i in 1:length(caparray)
+		if isa(caparray[i].membership, Real)
+			continue
+		else
+		testingmembership = caparray[i].membership
+		caparray[i].membership = cluster_num
+		for j in i:length(caparray)
+			if caparray[j].membership == testingmembership
+				caparray[j].membership = cluster_num
+			end
+		end
+		merge(cluster_lookup,{cluster_num => testingmembership}
+		cluster_num = cluster_num + 1
+		end
+	end
+	return (cluster_lookup,cleaned_clusters) 
+end
 end #End Module

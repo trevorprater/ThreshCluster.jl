@@ -6,4 +6,4 @@ type Fish
 end
 array_of_fish = [Fish(2),Fish(5),Fish(64),Fish(12)]
 
-myarray = make_simple_threshold_clusters(array_of_fish,threshcrit)
+(cluster_lookup,myarray) = make_simple_threshold_clusters(array_of_fish,threshcrit)
