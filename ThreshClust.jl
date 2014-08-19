@@ -107,10 +107,10 @@ end
 				caparray[j].membership = cluster_num
 			end
 		end
-		merge(cluster_lookup,{cluster_num => testingmembership}
+		merge!(cluster_lookup,{cluster_num => testingmembership})
 		cluster_num = cluster_num + 1
 		end
 	end
-	return (cluster_lookup,cleaned_clusters) 
+	return (cluster_lookup,caparray) 
 end
 end #End Module
