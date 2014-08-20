@@ -1,6 +1,6 @@
 using ThreshCluster
 mydistance(a,b) = abs(a-b)
-threshcrit = Simple_Threshold_Criteria(:size,mydistance,4)
+threshcrit = Simple_Threshold_Criteria(:size,mydistance,period(days(4))
 type Fish
 	size
 end
@@ -10,3 +10,4 @@ println("array_of_fish\n",array_of_fish)
 (cluster_lookup,myarray) = make_simple_threshold_clusters(array_of_fish,threshcrit)
 println(cluster_lookup)
 println(myarray)
+
