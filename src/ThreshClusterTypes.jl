@@ -1,4 +1,3 @@
-module ThreshClustTypes
 "Exports: Simple_Cluster_Container"
 abstract Cluster
 abstract Cluster_Container
@@ -12,4 +11,13 @@ export Simple_Cluster_Container
 #=type Simple_Cluster <: Cluster=#
 	#="""The simple cluster contains a dictionary of cluster profiles (centroids, etc.) indexed to an array of cluster containers. It also contains=#
 #=end=#
-end 
+abstract Membership_Criteria                                                                                                                                                                                 
+export Membership_Criteria
+abstract Threshold_Criteria <: Membership_Criteria                                                                                                                                                           
+export Threshold_Criteria
+type Simple_Threshold_Criteria <: Threshold_Criteria                                                                                                                                                         
+        compared_quantity::Symbol # The quantity of the object you wish to compare against                                                                                                                   
+        distance_function                                                                                                                                                                                    
+        threshold                                                                                                                                                                                            
+end                                                                                                                                                                                                          
+export Simple_Threshold_Criteria  
