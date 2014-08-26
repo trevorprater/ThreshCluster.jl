@@ -2,7 +2,7 @@
 =================================================================
 
 Threshclust.jl is a very simple API to allow you to do simple clustering jobs, where you can cluster data based on any distance metric you find as long as you provide a partial order upon it. The basic example given is for objets you would like to cluster that have a numeric attribute, but the sky is the limit as long as you can provide a partial order and a metric for an attribute your type manifests. Note that Threshclust was intended for divisive threshold clustering (the intent is to have each entity define their own cluster and exist in other clusters, so that one or more subroutines can be used to pare down membership to different clusters)
-```
+````
 Usage
 using ThreshClust
 type MyType
@@ -21,7 +21,7 @@ my_thresholding_criteria = Simple_Threshold_Criteria(:othernumber,mydistancefunc
 # I.E: Place vales of type MyType in the same cluster if are seperated by a distance no greater than 4, with distance as defined by mydistancefunction
 
 (cluster_lookup,myarrayofclusteredobjects) = make_simple_threshold_clusters(array_of_my_types,my_thresholding_criteria)
-```
+````
 
 A cluster container (what fills `myarrayofclusteredobjects`) contains the object it clusters, the field value being clustered upon, and the cluster number for the item.
 
