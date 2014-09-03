@@ -1,5 +1,4 @@
 module ThreshCluster
-using Debug
 #This is an API for doing simple clustering with an array of data points and a metric that can be applied to any member of those data points. Ideally, the API for this clustering
 #mechanism should need nothing more than to be passed an array and a distance function and do all the work on its own. We'll see how well that goal works out."""
 include("ThreshClusterTypes.jl")
