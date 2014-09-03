@@ -8,22 +8,22 @@ include("ThreshClusterTypes.jl")
 #test out in either direction from a given point whether or not it is in a neighbor cluster
 
 function make_simple_threshold_clusters(array,threshcrit::Threshold_Criteria)
-	capsulearray = initialize_cluster_containers(array,threshcrit.compared_quantity)
+	capsulearray = initialize_cluster_containers(array,threshcrit)
 	(memberships,clusters) = @time(develop_clusters(capsulearray,threshcrit))
 	#=(cluster_lookup,cleaned_clusters) = clean_clusters(clusters)=#
 	return (memberships,clusters) 
 end
 export make_simple_threshold_clusters
 
-function initialize_cluster_containers(array,compared_quantity)
+function initialize_cluster_containers(array,threshcrit)
 	#Encapsulates all elements of the array into a cluster_container object, so that each object can have its membership information associated with it.
-	map(x->Simple_Cluster_Container(x,compared_quantity,x.(compared_quantity)),array)
+	map(x->Simple_Cluster_Container(x,threshcrit.compared_quantity,threshcrit.compared_quantity_accessor(x),array))
 end
 
 
 function develop_clusters(caparray,threshcrit)
 	#Pull out the values we're doing comparisons on, and run unique on them
-	cleaned_array = cull_compared_quantities(caparray,threshcrit.compared_quantity)
+	cleaned_array = cull_compared_quantities(caparray,threshcrit)
 	#assign_relative_clusters does too much work
 	#Return from the cleaned array a hash of each element of the cleaned_array's membership
 	memberships = assign_relative_clusters(cleaned_array,threshcrit)
@@ -36,7 +36,7 @@ end
 function cull_compared_quantities(caparray,compared_quantity)
 	#We want to do as much processing as possible on the quantities to compare themselves
 	#and very little on the objects, so we use this to pull each element of our array
-	array_of_quantities = map(x->x.object.(compared_quantity),caparray)
+	array_of_quantities = map(x->threshcrit.compared_quantity_accessor(x.object),caparray)
 	cleaned_array = unique(array_of_quantities)
 	return cleaned_array
 end
@@ -101,7 +101,7 @@ function bake_clusters(memberships,caparray,cleaned_array,threshcrit)
 
 	for clustcont in caparray
 		#The membership of a cluster container is equal to the set of values of
-		membershipind = find(x->x==clustcont.object.(compared_quantity),cleaned_array)[1]
+		membershipind = find(x->x==threshcrit.compared_quantity_accessor(clustcont.object),cleaned_array)[1]
 		clustcont.membership = memberships[membershipind]
 	end
 	return caparray
@@ -126,7 +126,9 @@ end
 	#=end=#
 	#=return (cluster_lookup,caparray) =#
 #=end=#
-function group_containers_by_cluster(datecontainers,date_cluster_lookup)
+function group_containers_by_cluster(clustercontainers,cluster_lookup)
+	#Returns an array of arrays. Each array contains the elements of the cluster to which the cluster id corresponds to. 
+	#I.E: the first array contains all the elements in cluster 1. This is a very stupid and computationally intensive way to do this
         top_group = maximum(collect(keys(date_cluster_lookup)))
         array_container = {}
         for i = 1:top_group
