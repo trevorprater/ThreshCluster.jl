@@ -10,14 +10,14 @@ include("ThreshClusterTypes.jl")
 function make_simple_threshold_clusters(array,threshcrit::Threshold_Criteria)
 	capsulearray = initialize_cluster_containers(array,threshcrit)
 	(memberships,clusters) = @time(develop_clusters(capsulearray,threshcrit))
-	#=(cluster_lookup,cleaned_clusters) = clean_clusters(clusters)=#
-	return (memberships,clusters) 
+	tuple = (memberships,clusters)
+	return tuple
 end
 export make_simple_threshold_clusters
 
 function initialize_cluster_containers(array,threshcrit)
 	#Encapsulates all elements of the array into a cluster_container object, so that each object can have its membership information associated with it.
-	map(x->Simple_Cluster_Container(x,threshcrit.compared_quantity,threshcrit.compared_quantity_accessor(x),array))
+	map(x->Simple_Cluster_Container(x,threshcrit.compared_quantity,threshcrit.compared_quantity_accessor(x)),array)
 end
 
 
@@ -33,7 +33,7 @@ function develop_clusters(caparray,threshcrit)
 	return (memberships,clustered_end)
 end
 
-function cull_compared_quantities(caparray,compared_quantity)
+function cull_compared_quantities(caparray,threshcrit)
 	#We want to do as much processing as possible on the quantities to compare themselves
 	#and very little on the objects, so we use this to pull each element of our array
 	array_of_quantities = map(x->threshcrit.compared_quantity_accessor(x.object),caparray)
@@ -125,27 +125,45 @@ end
 		#=cluster_num = cluster_num + 1=#
 	#=end=#
 	#=return (cluster_lookup,caparray) =#
-#=end=#
+
+"""
+In this long quote is the old implementation of group_containers_by cluster, which was very ineffecient and could take minutes to do the group, which now appears to be done in just under a second
 function group_containers_by_cluster(clustercontainers,cluster_lookup)
 	#Returns an array of arrays. Each array contains the elements of the cluster to which the cluster id corresponds to. 
 	#I.E: the first array contains all the elements in cluster 1. This is a very stupid and computationally intensive way to do this
-        top_group = maximum(collect(keys(date_cluster_lookup)))
-        array_container = {}
-        for i = 1:top_group
-                cluster_holder = {}
-                clusterids = date_cluster_lookup[i]
-                for clusterid in clusterids
-                        for cluster_container in datecontainers
-                                if in(clusterid,cluster_container.membership)
-                                        cluster_holder = [cluster_holder; cluster_container]
-                                end
-                        end
-                end
-                array_container = [array_container; Array[[cluster_holder]]]
-                #Super obnoxious to figure out that Julia does not like arrays of arrays
-        end
-        return array_container
+	top_group = maximum(collect(keys(cluster_lookup)))
+	array_container = {}
+	for i = 1:top_group
+		cluster_holder = {}
+		clusterids = cluster_lookup[i]
+		for clusterid in clusterids
+			for cluster_container in clustercontainers
+				if in(clusterid,cluster_container.membership)
+					cluster_holder = [cluster_holder; cluster_container]
+				end
+			end
+		end
+		array_container = [array_container; Array[[cluster_holder]]]
+		#Super obnoxious to figure out that Julia does not like arrays of arrays
+	end
+	return array_container
+end
+"""
+function group_containers_by_cluster(cluster_tuple)
+	"Returns a hash of arrays, each array containing the elements indexed by that cluster number"
+	cluster_lookup = cluster_tuple[1]
+	clustercontainers = cluster_tuple[2]
+	top_group = maximum(collect(keys(cluster_lookup)))
+	array_container = fill(Any[],(top_group,1))
+	map(x->insert_into_container(x,array_container),clustercontainers)
+	return array_container
 end
 export group_containers_by_cluster
-end #End Module
-
+function insert_into_container(cluster_container,array_container)
+	"Inserts a cluster container into array container, which is a dictionary"
+	membership_array = cluster_container.membership
+	for membershipid in membership_array
+		array_container[membershipid] = vcat(array_container[membershipid],cluster_container)
+	end
+end
+end
