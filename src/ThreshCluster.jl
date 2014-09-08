@@ -9,7 +9,7 @@ include("ThreshClusterTypes.jl")
 
 function make_simple_threshold_clusters(array,threshcrit::Threshold_Criteria)
 	capsulearray = initialize_cluster_containers(array,threshcrit)
-	(memberships,clusters) = @time(develop_clusters(capsulearray,threshcrit))
+	(memberships,clusters) = develop_clusters(capsulearray,threshcrit)
 	tuple = (memberships,clusters)
 	return tuple
 end
