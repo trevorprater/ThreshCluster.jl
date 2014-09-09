@@ -156,6 +156,9 @@ function group_containers_by_cluster(cluster_tuple)
 	"Returns a hash of arrays, each array containing the elements indexed by that cluster number"
 	cluster_lookup = cluster_tuple[1]
 	clustercontainers = cluster_tuple[2]
+	if length(clustercontainers) < 1
+		return []
+	end
 	top_group = maximum(collect(keys(cluster_lookup)))
 	array_container = fill(Any[],(top_group,1))
 	map(x->insert_into_container(x,array_container),clustercontainers)
