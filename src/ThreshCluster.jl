@@ -8,6 +8,9 @@ include("ThreshClusterTypes.jl")
 #test out in either direction from a given point whether or not it is in a neighbor cluster
 
 function make_simple_threshold_clusters(array,threshcrit::Threshold_Criteria)
+	if length(array) < 1
+		return ([],[])
+	end
 	capsulearray = initialize_cluster_containers(array,threshcrit)
 	(memberships,clusters) = @time(develop_clusters(capsulearray,threshcrit))
 	tuple = (memberships,clusters)
