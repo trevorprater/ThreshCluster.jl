@@ -169,7 +169,14 @@ function insert_into_container(cluster_container,array_container)
 	"Inserts a cluster container into array container, which is a dictionary"
 	membership_array = cluster_container.membership
 	for membershipid in membership_array
-		array_container[membershipid] = vcat(array_container[membershipid],cluster_container)
+		array_container[membershipid] = vcat(array_container[membershipid],cluster_container.object)
 	end
 end
+
+function make_and_group_simple_threshold_cluster(array,threshold_criteria::Simple_Threshold_Criteria)
+	array_of_tuples = make_simple_threshold_clusters(array,threshold_criteria)
+	grouped_array = group_containers_by_cluster(array_of_tuples)
+	return grouped_array
+end
+export make_and_group_simple_threshold_cluster
 end
