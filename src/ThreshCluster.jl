@@ -173,7 +173,7 @@ function insert_into_container(cluster_container,array_container)
 	end
 end
 
-function make_and_group_simple_threshold_cluster(array,threshold_criteria::Simple_Threshold_Criteria)
+function make_and_group_simple_threshold_clusters(array,threshold_criteria::Simple_Threshold_Criteria)
 	array_of_tuples = make_simple_threshold_clusters(array,threshold_criteria)
 	grouped_array = group_containers_by_cluster(array_of_tuples)
 	return grouped_array
