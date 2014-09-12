@@ -178,5 +178,5 @@ function make_and_group_simple_threshold_clusters(array,threshold_criteria::Simp
 	grouped_array = group_containers_by_cluster(array_of_tuples)
 	return grouped_array
 end
-export make_and_group_simple_threshold_cluster
+export make_and_group_simple_threshold_clusters
 end
