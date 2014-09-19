@@ -1,6 +1,7 @@
 module ThreshCluster
 #This is an API for doing simple clustering with an array of data points and a metric that can be applied to any member of those data points. Ideally, the API for this clustering
 #mechanism should need nothing more than to be passed an array and a distance function and do all the work on its own. We'll see how well that goal works out."""
+using Debug
 include("ThreshClusterTypes.jl")
 #The next thing to implement is ordered threshold clustering, wherein we include an ordering function.
 #Then, the "clustered_start" function can start by ordering the elements of the culled set.
@@ -179,4 +180,50 @@ function make_and_group_simple_threshold_clusters(array,threshold_criteria::Simp
 	return grouped_array
 end
 export make_and_group_simple_threshold_clusters
+
+function clean_cluster(old_name_clustered)
+	"Takes a set of arrays in arrays in arrays so that they all become one array of clusters, ready to be turned into one event"
+	#This is what we're going to return, a set of all the cleaned clusters
+	final_clusters = []
+	name_clustered = reduce(vcat,old_name_clustered)
+	#Given a name_clustered[i][j][k][l], k is the name index
+	#First, we need a nested for loop for each of our clustering indices,
+	#
+	#cleared_name_indices are name_indices that we will have already collated into one cluster
+	cleared_name_indices = []
+		for name_index in 1:length(name_clustered)
+	    #=println("Starting on cluster number ",string(name_index))=#
+            #First, check to see if we have already collated this group. If so, break
+            if in(name_index,cleared_name_indices)
+		#=println("Skipping "*string(name_index))=#
+                #=@bp=#
+		continue
+            else
+                #=@bp=#
+                #This is what we group clusters we know are grouped together in for 
+                cleaning_cluster = name_clustered[name_index]
+		grouped_clusters = cleaning_cluster
+		#=grouped_clusters = Array[cleaning_cluster] =#
+                #=@bp=#
+                for other_name_index in name_index+1:length(name_clustered)
+                    other_cluster = name_clustered[other_name_index]
+		    #=@bp=#
+                        for object in grouped_clusters
+                            if in(object,other_cluster)
+                                grouped_clusters = [grouped_clusters;other_cluster]
+                                cleared_name_indices = [cleared_name_indices,other_name_index]
+				#=println("Cluster number "*string(other_name_index)*" eaten")=#
+                                #=@bp=#
+				break
+                            end
+                        end
+                end
+            end
+            final_clusters = [final_clusters; Array[unique(grouped_clusters)]]
+            #=@bp=#
+        end
+    return final_clusters
 end
+export clean_cluster
+end
+
