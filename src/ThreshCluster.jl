@@ -8,6 +8,9 @@ type Cluster
 end
 
 function make_simple_threshold_clusters(comparray,threshcrit::Threshold_Criteria)
+	if !(typeof(comparray) <: Array)
+		comparray = Any[comparray]
+	end
 	if length(comparray) < 1
 		return []
 	elseif length(comparray) < 2
