@@ -25,7 +25,7 @@ The compared quantity is a symbol for you to use to determine the quantity you a
 compared_quantity_accessor = stick->stick.length
 ```
 
-you could also use `compared_quantity_accessor = stick->getfield(stick,:length)`, but in this case the anonymous function increaes readability
+you could also use `compared_quantity_accessor = stick->getfield(stick,:length)`, but in this case the anonymous function and dot notation syntax readability
 
 The `distance_function` is the metric you use on two compared quantities. For real numbers you probably want:
 `distance_function(x,y) = abs(x-y)`
