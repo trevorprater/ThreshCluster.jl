@@ -15,7 +15,10 @@ This library has served well for the applications that conform to the cases abov
 First, define the criteria for clustering. These are defined as objects of type Simple_Threshold_Criteria (in the future, perhaps there will be more complex clustering criteria, but now there is a simple threshold criteria). 
 ```julia
 using ThreshCluster
-my_weight_criteria = Simple_Threshold_Criteria(compared_quantity,compared_quantity_accessor,distance_function,threshold)
+my_weight_criteria = Simple_Threshold_Criteria(compared_quantity,
+					       compared_quantity_accessor,
+					       distance_function,
+					       threshold)
 ```
 The compared quantity is a symbol for you to use to determine the quantity you are comparing. It is useful for bookkeeping but it could be left to none. The compared_quantity_accessor is the function that must be called on an object in order to obtain the quantity you are clustering on. For instance, if you want to cluster an array of sticks by length, then you would use:
 ```julia
@@ -63,7 +66,10 @@ my_threshold = 2
 array_of_my_types([MyType(1,2,"foo"),MyType(2,4,"bar"),MyType(6,8,"Baz")])
 
 
-my_thresholding_criteria = Simple_Threshold_Criteria(my_compared_quantity,my_distance_function,my_compared_quantity_accessor,my_threshold)
+my_thresholding_criteria = Simple_Threshold_Criteria(my_compared_quantity,
+                                                     my_distance_function,
+						     my_compared_quantity_accessor,
+						     my_threshold)
 
 array_of_clustered_arrays = make_simple_threshold_clusters(array_of_my_types,my_thresholding_criteria)
 ```
