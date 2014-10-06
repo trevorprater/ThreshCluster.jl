@@ -71,6 +71,7 @@ my_thresholding_criteria = Simple_Threshold_Criteria(my_compared_quantity,
 						     my_compared_quantity_accessor,
 						     my_threshold)
 
-array_of_clustered_arrays = make_simple_threshold_clusters(array_of_my_types,my_thresholding_criteria)
+array_of_clustered_arrays = make_simple_threshold_clusters(array_of_my_types,
+                                                           my_thresholding_criteria)
 ```
 
