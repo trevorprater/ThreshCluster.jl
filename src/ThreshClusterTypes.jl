@@ -1,5 +1,5 @@
 "Exports: Simple_Cluster_Container"
-abstract Cluster
+#=abstract Cluster=#
 abstract Cluster_Container
 type Simple_Cluster_Container <: Cluster_Container
 	"A simple container to associate membership information with an object"
