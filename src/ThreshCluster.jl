@@ -32,32 +32,39 @@ export make_simple_threshold_clusters
 
 function develop_clusters(comparray,threshcrit)
 	"""There have been many iterations of this clustering algorithm, and this is by far the fastest and most robust.
-	1. Initialize the first cluster. The first cluster is seeded by the first element of 'comparray', or the array of objects we want to compare and cluster
+	1. Initialize the first cluster. The first cluster is seeded by the first element of 'comparray', or the array of
+	objects we want to compare and cluster
 	"""
 
 	cluster_container = Any[]
 	firstcluster = Cluster(Any[comparray[1]],0,threshcrit.compared_quantity_accessor(comparray[1]))
 	cluster_container = vcat(cluster_container,firstcluster)
 	for object in comparray[2:end]
-		"""Go through each object in array, and we will see whether it should be its own cluster, or fit into a different cluster"""
+		"""Go through each object in array, 
+		and we will see whether it should be its own cluster,
+		or fit into a different cluster"""
 		#Cluster monogamy is a check to see if an object has merged into any clusters at all
 		cluster_monogamy = false
 		#Cluster polygamy is a check to see if a cluster has merged into more than one cluster
 		cluster_polygamy = false
 		for clusterid in 1:length(cluster_container)
-			"""Now, we are checking each cluster in the cluster container to see if our object from the comparray should belong to it"""
+			"""Now, we are checking each cluster in the cluster container
+			to see if our object from the comparray should belong to it"""
 			cluster = cluster_container[clusterid]
 			#Check is a tuple, the first element is a boolean, whether or not you are in the cluster, the second element is the distance to determine a new modifier if necessary
 			check = membership_check(object,cluster,threshcrit) 
 			if check[1]
 				"i.e: if the object belongs in the cluster"
 				if cluster_polygamy
-					"""If the object belongs in the cluster and cluster_polygamy is true, that means the object was already included in a different cluster
+					"""If the object belongs in the cluster and cluster_polygamy is true, 
+					that means the object was already included in a different cluster
 					This means that this new cluster should be subsumed by the old cluster"""
 					cluster_container[the_other_cluster_id] = subsume(cluster_container[the_other_cluster_id],cluster,threshcrit)
 				else
-					"""Otherwise, the cluster should be inserted into the other cluster, the modifier should be checked against the new object, and the cluster is now marked
-					for monogamy (meaning that it has been associated with a cluster and shouldn't be put in its own cluster) and polygamy (meaning that any clusters the object
+					"""Otherwise, the cluster should be inserted into the other cluster, 
+					the modifier should be checked against the new object, and the cluster is now marked
+					for monogamy (meaning that it has been associated with a cluster and shouldn't be put
+					in its own cluster) and polygamy (meaning that any clusters the object
 					meets the criteria for membership into should be subsumed by its starting cluster"""
 					cluster = insert_into_cluster(object,cluster,threshcrit,check[2])
 					cluster_monogamy = true
@@ -74,11 +81,13 @@ function develop_clusters(comparray,threshcrit)
 				#=end=#
 			end #End if check[1]
 		end #End for cluster in cluster container
-		"""If we have gone through each cluster in the container and there is no cluster that our object should be included in, it should seed a new cluster"""
+		"""If we have gone through each cluster in the container and there is 
+		no cluster that our object should be included in, it should seed a new cluster"""
 		if cluster_monogamy == false
 				new_cluster = Cluster(Any[object],0,threshcrit.compared_quantity_accessor(object))
 				cluster_container = vcat(cluster_container,new_cluster)
-				"""The cluster is now monogamous, but it doesn't matter as we now move to a different object in the comparray"""
+				"""The cluster is now monogamous, but it doesn't matter as we now 
+				move to a different object in the comparray"""
 				#=cluster_monogamy = true=#
 				
 		end
@@ -93,7 +102,8 @@ function membership_check(object,cluster,threshcrit)
 	clusterbasequant = cluster.seeder
 	clusteringdistance = threshcrit.distance_function(objectquant,clusterbasequant)
 	if clusteringdistance <= threshcrit.threshold+cluster.modifier
-		"""i.e: if the distance between the objects is less than our thresholding criteria plus the modifier for the cluster, then it should be included in the cluster"""
+		"""i.e: if the distance between the objects is less than 
+		our thresholding criteria plus the modifier for the cluster, then it should be included in the cluster"""
 		return (true,clusteringdistance)
 	else
 		return (false,None)
@@ -101,7 +111,8 @@ function membership_check(object,cluster,threshcrit)
 end
 
 function insert_into_cluster(object,cluster,threshcrit,clusteringdistance)
-	"""This inserts an object into a cluster's object array, and adjusts the modifier to widen it if the object's distance from the seeder is already larger than the object"""
+	"""This inserts an object into a cluster's object array, and adjusts the 
+	modifier to widen it if the object's distance from the seeder is already larger than the object"""
 	cluster.array = vcat(cluster.array,object)
 	if clusteringdistance > cluster.modifier
 		cluster.modifier = clusteringdistance
