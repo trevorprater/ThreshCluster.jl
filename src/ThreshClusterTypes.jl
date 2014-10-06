@@ -1,13 +1,10 @@
-"Exports: Simple_Cluster_Container"
-#=abstract Cluster=#
-abstract Cluster_Container
-type Simple_Cluster_Container <: Cluster_Container
-	"A simple container to associate membership information with an object"
-	object
-	compared_quantity #This is the quantity of the object that one desires to measure against, purely for book keeping, as we now use accessor methods
-	membership
+"Exports: Simple_Threshold_Criteria, Cluster"
+
+type Cluster
+	array #The actual array of objects that forms the cluster
+	modifier #The largest distance between two objects in the cluster, which acts to widen the threshold for inclusion to a cluster
+	seeder # The object that this cluster was seeded from
 end
-export Simple_Cluster_Container
 
 abstract Membership_Criteria
 "Theoretically, we could want other kinds of membership criteria for clustering"
