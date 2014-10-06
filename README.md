@@ -1,7 +1,7 @@
-#ThreshClust.jl: Simple API For Simple Divisive Threshold Clustering Applications
+#ThreshCluster.jl: Simple API For Simple Divisive Threshold Clustering Applications
 =================================================================
 
-Threshclust.jl is a very simple API to allow you to do simple clustering jobs, where you can cluster data based on any distance metric you find as long as you provide a partial order upon it. The basic example given is for objets you would like to cluster that have a numeric attribute, but the sky is the limit as long as you can provide a partial order and a metric for an attribute your type manifests. Note that Threshclust was intended for divisive threshold clustering 
+ThreshCluster.jl is a very simple API to allow you to do simple clustering jobs, where you can cluster data based on any distance metric you find as long as you provide a partial order upon it. The basic example given is for objets you would like to cluster that have a numeric attribute, but the sky is the limit as long as you can provide a partial order and a metric for an attribute your type manifests. Note that Threshclust was intended for divisive threshold clustering 
 
 #Divisive Clustering
 ThreshCluster's original use was in solving problems regarding record linkage. Say you have 150,000 objects. Many of those objects are duplicates to within some threshold (i.e: they all have the same weight within some threshold, the same height within some threshold and the same mass within some threshold). While this could be a regression problem, this algorithm is useful when:
@@ -30,7 +30,7 @@ you could also use `compared_quantity_accessor = stick->getfield(stick,:length)`
 The `distance_function` is the metric you use on two compared quantities. For real numbers you probably want:
 `distance_function(x,y) = abs(x-y)`
 
-The threshold is your starting threshold for the inclusion of two objects. Say that you want to cluster all sticks that are within 3 units of length from one another. Then your threshold will be three. Note that as of the current implementation of ThreshClust, there is a sneaky bit of pseudo-learning going on, so you may get sticks within more than three units of length from one another.
+The threshold is your starting threshold for the inclusion of two objects. Say that you want to cluster all sticks that are within 3 units of length from one another. Then your threshold will be three. Note that as of the current implementation of ThreshCluster, there is a sneaky bit of pseudo-learning going on, so you may get sticks within more than three units of length from one another.
 
 Now, all that remains is to pass an array of objects you want to compare, along with your threshold criteria, and ThreshCluster will go to work:
 
@@ -48,7 +48,7 @@ I.e: a cluster's radius expands as it adds new members equal to the distance of 
 # EXAMPLE!!!
 ```julia
 Usage
-using ThreshClust
+using ThreshCluster
 type MyType
 	number
 	othernumber
