@@ -11,7 +11,7 @@ function make_simple_threshold_clusters(comparray,threshcrit::Threshold_Criteria
 	if length(comparray) < 1
 		return []
 	elseif length(comparray) < 2
-		return Any[comparray]
+		return comparray
 	else
 		clustered_array = develop_clusters(comparray,threshcrit)
 		clustered_array = map(x->unique(x.array),clustered_array)
