@@ -51,7 +51,7 @@ function develop_clusters(comparray,threshcrit)
 			"""Now, we are checking each cluster in the cluster container
 			to see if our object from the comparray should belong to it"""
 			cluster = cluster_container[clusterid]
-			#Check is a tuple, the first element is a boolean, whether or not you are in the cluster, the second element is the distance to determine a new modifier if necessary
+			# Check is a tuple, the first element is a boolean, whether or not you are in the cluster, the second element is the distance to determine a new modifier if necessary
 			check = membership_check(object,cluster,threshcrit) 
 			if check[1]
 				"i.e: if the object belongs in the cluster"
@@ -59,16 +59,25 @@ function develop_clusters(comparray,threshcrit)
 					"""If the object belongs in the cluster and cluster_polygamy is true, 
 					that means the object was already included in a different cluster
 					This means that this new cluster should be subsumed by the old cluster"""
-					cluster_container[the_other_cluster_id] = subsume(cluster_container[the_other_cluster_id],cluster,threshcrit)
+					cluster_container[the_other_cluster_id] = subsume(
+					cluster_container[the_other_cluster_id],
+					cluster,
+					threshcrit )
 				else
-					"""Otherwise, the cluster should be inserted into the other cluster, 
+					"""Otherwise, the object should be inserted into the other cluster, 
 					the modifier should be checked against the new object, and the cluster is now marked
 					for monogamy (meaning that it has been associated with a cluster and shouldn't be put
 					in its own cluster) and polygamy (meaning that any clusters the object
 					meets the criteria for membership into should be subsumed by its starting cluster"""
 					cluster = insert_into_cluster(object,cluster,threshcrit,check[2])
-					cluster_monogamy = true
-					cluster_polygamy = true
+					"""These two variables are set to global now, as some changes
+					to the way julia holds variables in scope makes them not persist
+					between loop iterations. This change is arguably a good one,
+					as this particular construct is pretty gross; however, for it to work
+					we have to work against this language construction"""
+					global cluster_monogamy = true
+					global cluster_polygamy = true
+					# Global because Julia now only keeps some variables in local scope
 					global the_other_cluster_id = clusterid
 				end
 				#=if cluster_polygamy == false=#
@@ -122,7 +131,7 @@ end
 
 function subsume(the_other_cluster,cluster,threshcrit)
 	"""If an object is to be polyamorous and try to be part of more than one cluster, the cluster it joined first consumes the second cluster
-	We then check the seeder distance. If the seeder for the consumed cluster has a distance greater than the cluster's modifier, than 
+	We then check the seeder distance. If the seeder for the consumed cluster has a distance greater than the cluster's modifier, then 
 	the cluster adopts this distanec as its new modifier, the same as if it had had a new object insertion"""
 	the_other_cluster.array = vcat(the_other_cluster.array,cluster.array)
 	seeder_distances = threshcrit.distance_function(the_other_cluster.seeder,cluster.seeder)
