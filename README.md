@@ -66,14 +66,12 @@ my_compared_quantity_accessor(mytype::MyType) = mytype.othernumber
 
 my_threshold = 2
 
-my_thresholding_criteria = Simple_Threshold_Criteria(
-					my_compared_quantity,
+my_thresholding_criteria = Simple_Threshold_Criteria(my_compared_quantity,
 					 my_compared_quantity_accessor,
 					 my_distance_function,
 					 my_threshold)
 
-array_of_clustered_arrays = make_simple_threshold_clusters(
-						array_of_my_types,
+array_of_clustered_arrays = make_simple_threshold_clusters(array_of_my_types,
 						my_thresholding_criteria)
 ```
 Output of including this file would be:
