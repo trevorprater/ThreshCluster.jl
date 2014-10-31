@@ -50,7 +50,6 @@ I.e: a cluster's radius expands as it adds new members equal to the distance of 
 
 # EXAMPLE!!!
 ```julia
-Usage
 using ThreshCluster
 type MyType
 	number
