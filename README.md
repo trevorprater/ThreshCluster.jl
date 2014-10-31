@@ -6,7 +6,9 @@ ThreshCluster.jl is a very simple API to allow you to do simple clustering jobs,
 #Divisive Clustering
 ThreshCluster's original use was in solving problems regarding record linkage. Say you have 150,000 objects. Many of those objects are duplicates to within some threshold (i.e: they all have the same weight within some threshold, the same height within some threshold and the same mass within some threshold). While this could be a regression problem, this algorithm is useful when:
 1. There are no complicated features and clustering is to be done once for each feature (in the example space above, there are three distinct features to classify on and each is a member of the real numbers, so each has a well-defined partial order and distance function)
+
 2. Each element is different enough in these features that two objects that have similar masses are not likely to also have both similar heights and weights. If this were the case, and there were not other dimensions to exploit, it may be more advisable to consider a learning algorithm working through a regression
+
 3. You are presented with a large number of elements to perform this analysis on 
 
 This library has served well for the applications that conform to the cases above, and benefits most from the design goal of being very simple to operate. 
