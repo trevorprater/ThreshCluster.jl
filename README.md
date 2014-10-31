@@ -1,7 +1,7 @@
 #ThreshCluster.jl: Simple API For Simple Divisive Threshold Clustering Applications
 =================================================================
 
-ThreshCluster.jl is a very simple API to allow you to do simple clustering jobs, where you can cluster data based on any distance metric you find as long as you provide a partial order upon it. The basic example given is for objets you would like to cluster that have a numeric attribute, but the sky is the limit as long as you can provide a partial order and a metric for an attribute your type manifests. Note that Threshclust was intended for divisive threshold clustering 
+ThreshCluster.jl is a very simple API to allow you to do simple clustering jobs, where you can cluster data based on any distance metric you find as long as you provide a partial order upon it. The basic example given is for objects you would like to cluster that have a numeric attribute, but the sky is the limit as long as you can provide a partial order and a metric for an attribute your type manifests. Note that Threshclust was intended for divisive threshold clustering 
 
 #Divisive Clustering
 ThreshCluster's original use was in solving problems regarding record linkage. Say you have 150,000 objects. Many of those objects are duplicates to within some threshold (i.e: they all have the same weight within some threshold, the same height within some threshold and the same mass within some threshold). While this could be a regression problem, this algorithm is useful when:
