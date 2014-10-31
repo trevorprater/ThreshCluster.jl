@@ -23,7 +23,7 @@ my_weight_criteria = Simple_Threshold_Criteria(compared_quantity,
 					       distance_function,
 					       threshold)
 ```
-The compared quantity is a symbol for you to use to determine the quantity you are comparing. It is useful for bookkeeping but it could be left to none. The compared_quantity_accessor is the function that must be called on an object in order to obtain the quantity you are clustering on. For instance, if you want to cluster an array of sticks by length, then you would use:
+The `compared quantity` is a symbol for you to use to determine the quantity you are comparing. It is useful for bookkeeping but it could be left to none. The `compared_quantity_accessor` is the function that must be called on an object in order to obtain the quantity you are clustering on. For instance, if you want to cluster an array of sticks by length, then you would use:
 ```julia
 compared_quantity_accessor = stick->stick.length
 ```
