@@ -14,9 +14,6 @@ function make_simple_threshold_clusters(comparray,threshcrit::Threshold_Criteria
 	Each subarray contains at least one element, and is indexed by an element from the original array
 	i.e: The array at element 4 is an array of elements fulfilling the threshold criteria for element
 	4."""
-	if !(typeof(comparray) <: Array)
-		comparray = Any[comparray]
-	end
 	if length(comparray) < 1
 		return []
 	elseif length(comparray) < 2
@@ -36,17 +33,17 @@ function develop_clusters(comparray,threshcrit)
 	objects we want to compare and cluster
 	"""
 
-	cluster_container = Any[]
+	cluster_container = Cluster[]
 	firstcluster = Cluster(Any[comparray[1]],0,threshcrit.compared_quantity_accessor(comparray[1]))
-	cluster_container = vcat(cluster_container,firstcluster)
+	push!(cluster_container,firstcluster)
 	for object in comparray[2:end]
 		"""Go through each object in array, 
 		and we will see whether it should be its own cluster,
 		or fit into a different cluster"""
 		#Cluster monogamy is a check to see if an object has merged into any clusters at all
-		cluster_monogamy = false
+		global cluster_monogamy = false
 		#Cluster polygamy is a check to see if a cluster has merged into more than one cluster
-		cluster_polygamy = false
+		global cluster_polygamy = false
 		for clusterid in 1:length(cluster_container)
 			"""Now, we are checking each cluster in the cluster container
 			to see if our object from the comparray should belong to it"""
@@ -69,16 +66,16 @@ function develop_clusters(comparray,threshcrit)
 					for monogamy (meaning that it has been associated with a cluster and shouldn't be put
 					in its own cluster) and polygamy (meaning that any clusters the object
 					meets the criteria for membership into should be subsumed by its starting cluster"""
-					cluster = insert_into_cluster(object,cluster,threshcrit,check[2])
+					insert_into_cluster!(object,cluster,threshcrit,check[2])
 					"""These two variables are set to global now, as some changes
 					to the way julia holds variables in scope makes them not persist
 					between loop iterations. This change is arguably a good one,
 					as this particular construct is pretty gross; however, for it to work
 					we have to work against this language construction"""
-					global cluster_monogamy = true
-					global cluster_polygamy = true
 					# Global because Julia now only keeps some variables in local scope
 					global the_other_cluster_id = clusterid
+                                        cluster_monogamy = true
+                                        cluster_polygamy = true
 				end
 				#=if cluster_polygamy == false=#
 					#="=#
@@ -94,10 +91,10 @@ function develop_clusters(comparray,threshcrit)
 		no cluster that our object should be included in, it should seed a new cluster"""
 		if cluster_monogamy == false
 				new_cluster = Cluster(Any[object],0,threshcrit.compared_quantity_accessor(object))
-				cluster_container = vcat(cluster_container,new_cluster)
+				push!(cluster_container,new_cluster)
 				"""The cluster is now monogamous, but it doesn't matter as we now 
 				move to a different object in the comparray"""
-				#=cluster_monogamy = true=#
+                                cluster_monogamy = true
 				
 		end
 	end #end for object in comparray
@@ -119,10 +116,10 @@ function membership_check(object,cluster,threshcrit)
 	end
 end
 
-function insert_into_cluster(object,cluster,threshcrit,clusteringdistance)
+function insert_into_cluster!(object,cluster,threshcrit,clusteringdistance)
 	"""This inserts an object into a cluster's object array, and adjusts the 
 	modifier to widen it if the object's distance from the seeder is already larger than the object"""
-	cluster.array = vcat(cluster.array,object)
+	push!(cluster.array,object)
 	if clusteringdistance > cluster.modifier
 		cluster.modifier = clusteringdistance
 	end
@@ -133,7 +130,7 @@ function subsume(the_other_cluster,cluster,threshcrit)
 	"""If an object is to be polyamorous and try to be part of more than one cluster, the cluster it joined first consumes the second cluster
 	We then check the seeder distance. If the seeder for the consumed cluster has a distance greater than the cluster's modifier, then 
 	the cluster adopts this distanec as its new modifier, the same as if it had had a new object insertion"""
-	the_other_cluster.array = vcat(the_other_cluster.array,cluster.array)
+	push!(the_other_cluster.array,cluster.array)
 	seeder_distances = threshcrit.distance_function(the_other_cluster.seeder,cluster.seeder)
 	if seeder_distances > the_other_cluster.modifier
 		the_other_cluster.modifier = seeder_distances

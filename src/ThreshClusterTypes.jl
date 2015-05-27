@@ -1,9 +1,9 @@
 "Exports: Simple_Threshold_Criteria, Cluster"
 
 type Cluster
-	array #The actual array of objects that forms the cluster
-	modifier #The largest distance between two objects in the cluster, which acts to widen the threshold for inclusion to a cluster
-	seeder # The object that this cluster was seeded from
+	array::Array{Any,1} #The actual array of objects that forms the cluster
+	modifier::Float64 #The largest distance between two objects in the cluster, which acts to widen the threshold for inclusion to a cluster
+	seeder::Any # The object that this cluster was seeded from
 end
 
 abstract Membership_Criteria
