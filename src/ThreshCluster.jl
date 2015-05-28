@@ -52,7 +52,7 @@ function develop_clusters(comparray,threshcrit)
 			check = membership_check(object,cluster,threshcrit) 
 			if check[1]
 				"i.e: if the object belongs in the cluster"
-				if cluster_polygamy
+				if cluster_monogamy
 					"""If the object belongs in the cluster and cluster_polygamy is true, 
 					that means the object was already included in a different cluster
 					This means that this new cluster should be subsumed by the old cluster"""
@@ -75,7 +75,6 @@ function develop_clusters(comparray,threshcrit)
 					# Global because Julia now only keeps some variables in local scope
 					global the_other_cluster_id = clusterid
                                         cluster_monogamy = true
-                                        cluster_polygamy = true
 				end
 				#=if cluster_polygamy == false=#
 					#="=#
@@ -130,7 +129,7 @@ function subsume(the_other_cluster,cluster,threshcrit)
 	"""If an object is to be polyamorous and try to be part of more than one cluster, the cluster it joined first consumes the second cluster
 	We then check the seeder distance. If the seeder for the consumed cluster has a distance greater than the cluster's modifier, then 
 	the cluster adopts this distanec as its new modifier, the same as if it had had a new object insertion"""
-	push!(the_other_cluster.array,cluster.array)
+	append!(the_other_cluster.array,cluster.array)
 	seeder_distances = threshcrit.distance_function(the_other_cluster.seeder,cluster.seeder)
 	if seeder_distances > the_other_cluster.modifier
 		the_other_cluster.modifier = seeder_distances
