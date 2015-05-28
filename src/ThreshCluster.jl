@@ -52,7 +52,7 @@ function develop_clusters(comparray,threshcrit)
 			check = membership_check(object,cluster,threshcrit) 
 			if check[1]
 				"i.e: if the object belongs in the cluster"
-				if cluster_monogamy
+				if cluster_polygamy
 					"""If the object belongs in the cluster and cluster_polygamy is true, 
 					that means the object was already included in a different cluster
 					This means that this new cluster should be subsumed by the old cluster"""
@@ -75,6 +75,7 @@ function develop_clusters(comparray,threshcrit)
 					# Global because Julia now only keeps some variables in local scope
 					global the_other_cluster_id = clusterid
                                         cluster_monogamy = true
+                                        cluster_polygamy = true
 				end
 				#=if cluster_polygamy == false=#
 					#="=#
@@ -94,6 +95,7 @@ function develop_clusters(comparray,threshcrit)
 				"""The cluster is now monogamous, but it doesn't matter as we now 
 				move to a different object in the comparray"""
                                 cluster_monogamy = true
+                                cluster_polygamy = true
 				
 		end
 	end #end for object in comparray
